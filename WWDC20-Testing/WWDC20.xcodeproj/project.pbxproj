@@ -15,6 +15,7 @@
 		7933E542242D42B100AE9B5A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7933E540242D42B100AE9B5A /* LaunchScreen.storyboard */; };
 		7933E54D242D42B200AE9B5A /* WWDC20Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7933E54C242D42B200AE9B5A /* WWDC20Tests.swift */; };
 		7933E558242D42B200AE9B5A /* WWDC20UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7933E557242D42B200AE9B5A /* WWDC20UITests.swift */; };
+		7962743C24326E0F0015EFD1 /* Portal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7962743B24326E0F0015EFD1 /* Portal.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		7933E553242D42B200AE9B5A /* WWDC20UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WWDC20UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7933E557242D42B200AE9B5A /* WWDC20UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WWDC20UITests.swift; sourceTree = "<group>"; };
 		7933E559242D42B200AE9B5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7962743B24326E0F0015EFD1 /* Portal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Portal.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 				7933E535242D42AD00AE9B5A /* AppDelegate.swift */,
 				7933E537242D42AD00AE9B5A /* art.scnassets */,
 				7933E539242D42AD00AE9B5A /* ViewController.swift */,
+				7962743B24326E0F0015EFD1 /* Portal.swift */,
 				7933E53B242D42AD00AE9B5A /* Main.storyboard */,
 				7933E53E242D42B100AE9B5A /* Assets.xcassets */,
 				7933E540242D42B100AE9B5A /* LaunchScreen.storyboard */,
@@ -262,6 +265,7 @@
 			files = (
 				7933E53A242D42AD00AE9B5A /* ViewController.swift in Sources */,
 				7933E536242D42AD00AE9B5A /* AppDelegate.swift in Sources */,
+				7962743C24326E0F0015EFD1 /* Portal.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
