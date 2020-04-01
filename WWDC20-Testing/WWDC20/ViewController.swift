@@ -21,7 +21,7 @@ class ViewController: UIViewController {
     var arCam: SCNNode!
     var initialCamPos = SCNVector3Zero
     var relativeCamPos = SCNVector3Zero
-    ///update the portals according to the room you are in. Turning off the portals from the rooms you are not in.
+    ///update the portals according to the room you are in. Turning off the portals from the other rooms.
     var currRoomIndex = 0{
         willSet{
             for i in 0..<roomCount{
@@ -112,10 +112,13 @@ class ViewController: UIViewController {
             let portalOutSet = Portal(with: portalOut[i], and: duplPortalIn[nextI])
             portalsIn.append(portalInSet)
             portalsOut.append(portalOutSet)
+            scene.rootNode.addChildNode(portalInSet)
+            scene.rootNode.addChildNode(portalOutSet)
+
         }
     }
     
-    // MARK: - Camera Movement and Orientation
+    // MARK: - Camera Movement
     func move(){
         ///orientation
         mainCam.orientation = arCam.orientation
@@ -124,7 +127,7 @@ class ViewController: UIViewController {
         let i = initialCamPos
         let r = relativeCamPos
         let a = arCam.position
-        let distance = SCNVector3(r.x - a.x, r.y - a.y, r.z - a.z)
+        let distance = SCNVector3(a.x - r.x, a.y - r.y, a.z - r.z)
         mainCam.position = SCNVector3(i.x + distance.x, i.y + distance.y, i.z + distance.z)
     }
     
@@ -146,8 +149,7 @@ class ViewController: UIViewController {
     }
 }
 
-// MARK: - ARSCNViewDelegate
-///Update and worldtracking
+// MARK: - Update, worldtracking and orientation
 extension ViewController: ARSCNViewDelegate{
     
     override func viewWillAppear(_ animated: Bool) {
@@ -158,6 +160,7 @@ extension ViewController: ARSCNViewDelegate{
 
         // Run the view's session
         sceneView.session.run(configuration)
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -167,6 +170,7 @@ extension ViewController: ARSCNViewDelegate{
         sceneView.session.pause()
     }
 
+    //MARK:- Update
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         move()
     }
@@ -176,11 +180,28 @@ extension ViewController: ARSCNViewDelegate{
 extension ViewController: SCNPhysicsContactDelegate{
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
         ///Check if one of the objects coliding is a portal and than telleport the player to it
-        if let portal = (contact.nodeA as? Portal), contact.nodeA.name == "Portal" {
+        if let portal = (contact.nodeA as? Portal) {
             teleport(to: portal)
         }
-        if let portal = (contact.nodeB as? Portal),contact.nodeA.name == "Portal" {
+        if let portal = (contact.nodeB as? Portal) {
             teleport(to: portal)
         }
+    }
+}
+
+//MARK: - Getting Angles
+//Getting angle between 2 points
+extension Float {
+    static func angleToPoint(pointOnCircle: CGPoint) -> Float {
+        
+        let originX = pointOnCircle.x
+        let originY = pointOnCircle.y
+        var radians = atan2(originY, originX)
+        
+        while radians < 0 {
+            radians += CGFloat(2 * Double.pi)
+        }
+        
+        return Float(radians)
     }
 }

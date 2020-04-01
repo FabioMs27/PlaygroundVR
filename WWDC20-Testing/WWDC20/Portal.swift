@@ -24,36 +24,52 @@ class Portal: SCNNode{
         return target.childNode(withName: "camera", recursively: true)
     }
     
-    let texture = SKScene()
+    //Resolution of the portal
+    var portalSize: CGSize{
+        return UIScreen.main.bounds.size
+    }
+    
+    var texture: SKScene!
     let cameraView = SK3DNode()
-
+    
+    
 
 
     init(with portal: SCNNode, and target: SCNNode) {
         super.init()
+        texture = SKScene(size: portalSize)
+        texture.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        texture.scaleMode = .aspectFit
+        
         self.portal = portal
         self.target = target
-        self.addChildNode(portal)
-        self.name = "Portal"
-        texture.backgroundColor = .black
-        texture.addChild(cameraView)
+        setUpPlaceHolder()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    ///get the place holder in the scene and transform it to the portal class
+    func setUpPlaceHolder(){
+        self.geometry = portal.geometry
+        self.position = portal.position
+        self.physicsBody = portal.physicsBody
+        portal.removeFromParentNode()
+    }
+    
     func setUpPortal(scene: SCNScene){
-        texture.scaleMode = .aspectFill
+        texture.addChild(cameraView)
         
         cameraView.scnScene = scene
         cameraView.pointOfView = targetCamera
+        cameraView.viewportSize = texture.size
         
-        portal.geometry?.firstMaterial?.diffuse.contents = texture
+        self.geometry?.firstMaterial?.diffuse.contents = texture
     }
     
     func teleportOffSet(player: SCNNode) -> Float{
-        player.position.x + portal.position.x
+        player.position.x + self.position.x
     }
     
     func deactivatePorta(){
