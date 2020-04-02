@@ -9,6 +9,7 @@
 import UIKit
 import SceneKit
 import ARKit
+import CoreMotion
 
 //MARK: - ViewController
 class ViewController: UIViewController {
@@ -16,25 +17,15 @@ class ViewController: UIViewController {
     @IBOutlet var sceneView: ARSCNView!
     var scene: SCNScene!
     var duplicateScene: SCNScene!
+    ///Motion Manager
+    var motionManager = CMMotionManager()
     ///Cameras
     var mainCam: SCNNode!
     var arCam: SCNNode!
     var initialCamPos = SCNVector3Zero
     var relativeCamPos = SCNVector3Zero
     ///update the portals according to the room you are in. Turning off the portals from the other rooms.
-    var currRoomIndex = 0{
-        willSet{
-            for i in 0..<roomCount{
-                if i != newValue{
-                    portalsIn[i].deactivatePorta()
-                    portalsOut[i].deactivatePorta()
-                }else{
-                    portalsIn[i].setUpPortal(scene: duplicateScene)
-                    portalsOut[i].setUpPortal(scene: duplicateScene)
-                }
-            }
-        }
-    }
+    var currRoomIndex = 0
     ///properties for the next room and last room according to the room you are in
     var nextIndex: Int{
         return currRoomIndex + 1 == roomCount ? 0 : currRoomIndex + 1
@@ -42,6 +33,7 @@ class ViewController: UIViewController {
     var lastIndex: Int{
         return currRoomIndex - 1 < 0 ? roomCount - 1 : currRoomIndex - 1
     }
+    var isTeleporting = false
     
     ///Portals
     var portalsIn = [Portal]()
@@ -108,45 +100,48 @@ class ViewController: UIViewController {
         for i in 0..<roomCount{
             let nextI = i == roomCount - 1 ? 0 : i + 1
             let lastI = i == 0 ? roomCount - 1 : i - 1
-            let portalInSet = Portal(with: portalIn[i], and: duplPortalOut[lastI])
-            let portalOutSet = Portal(with: portalOut[i], and: duplPortalIn[nextI])
+            let portalInSet = Portal(with: portalIn[i], and: duplPortalOut[lastI], type: .In)
+            let portalOutSet = Portal(with: portalOut[i], and: duplPortalIn[nextI], type: .Out)
             portalsIn.append(portalInSet)
             portalsOut.append(portalOutSet)
             scene.rootNode.addChildNode(portalInSet)
             scene.rootNode.addChildNode(portalOutSet)
-
+            portalInSet.setUpPortal(scene: duplicateScene)
+            portalOutSet.setUpPortal(scene: duplicateScene)
         }
     }
     
     // MARK: - Camera Movement
     func move(){
-        ///orientation
-        mainCam.orientation = arCam.orientation
-        
         ///movement
         let i = initialCamPos
         let r = relativeCamPos
         let a = arCam.position
         let distance = SCNVector3(a.x - r.x, a.y - r.y, a.z - r.z)
         mainCam.position = SCNVector3(i.x + distance.x, i.y + distance.y, i.z + distance.z)
+        
+        ///Get Portal's visuals to uptade depending on the movement
+        portalsIn[currRoomIndex].updateCameraView(relativeTo: mainCam)
+        portalsOut[currRoomIndex].updateCameraView(relativeTo: mainCam)
     }
     
     func teleport(to portal: Portal){
-        let offSet = portal.teleportOffSet(player: mainCam)
+//        let offSet = portal.teleportOffSet(player: mainCam)
         initialCamPos = portal.target.position
-        initialCamPos.x += offSet
+//        initialCamPos.x += offSet
         relativeCamPos = arCam.position
         mainCam.position = initialCamPos
         
         ///treatment to CurrRoomIndex to make the rooms loop. If you are in the first room and want to go back this code will allow you to go to the latest room
-        if (portal.name?.contains("In"))! {
+        if portal.type == .In{
             currRoomIndex = lastIndex
-
-        }else{
+        }
+        if portal.type == .Out{
             currRoomIndex = nextIndex
         }
-        portalsIn[currRoomIndex].setUpPortal(scene: duplicateScene)
+        isTeleporting = true
     }
+    
 }
 
 // MARK: - Update, worldtracking and orientation
@@ -161,6 +156,12 @@ extension ViewController: ARSCNViewDelegate{
         // Run the view's session
         sceneView.session.run(configuration)
         
+        motionManager.startDeviceMotionUpdates(to: OperationQueue.current!) { (data, error) in
+            if let myData = data{
+                self.mainCam.orientation = myData.gaze(atOrientation: .portrait)
+            }
+        }
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -174,34 +175,42 @@ extension ViewController: ARSCNViewDelegate{
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         move()
     }
+    
 }
 
 // MARK: - Physics Handling
 extension ViewController: SCNPhysicsContactDelegate{
+    
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
-        ///Check if one of the objects coliding is a portal and than telleport the player to it
-        if let portal = (contact.nodeA as? Portal) {
-            teleport(to: portal)
-        }
-        if let portal = (contact.nodeB as? Portal) {
-            teleport(to: portal)
+        if !isTeleporting{
+            ///Check if one of the objects coliding is a portal and than telleport the player to it
+            if let portal = (contact.nodeA as? Portal) {
+                teleport(to: portal)
+            }
+            if let portal = (contact.nodeB as? Portal) {
+                teleport(to: portal)
+            }
         }
     }
+    
+    func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
+        isTeleporting = false
+    }
+    
 }
 
-//MARK: - Getting Angles
-//Getting angle between 2 points
-extension Float {
-    static func angleToPoint(pointOnCircle: CGPoint) -> Float {
+//MARK:- Orientation gaze
+extension CMDeviceMotion {
+    
+    func gaze(atOrientation orientation: UIInterfaceOrientation) -> SCNVector4 {
         
-        let originX = pointOnCircle.x
-        let originY = pointOnCircle.y
-        var radians = atan2(originY, originX)
+        let attitude = self.attitude.quaternion
+        let aq = GLKQuaternionMake(Float(attitude.x), Float(attitude.y), Float(attitude.z), Float(attitude.w))
+      
+        let cq = GLKQuaternionMakeWithAngleAndAxis(-Float.pi / 2, 1, 0, 0)
+        let q = GLKQuaternionMultiply(cq, aq)
         
-        while radians < 0 {
-            radians += CGFloat(2 * Double.pi)
-        }
-        
-        return Float(radians)
+        return SCNVector4(x: q.x, y: q.y, z: q.z, w: q.w)
     }
+    
 }
