@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     var scene: SCNScene!
     var duplicateScene: SCNScene!
     ///Motion Manager
-    var motionManager = CMMotionManager()
+    let motionManager = CMMotionManager()
     ///Cameras
     var mainCam: SCNNode!
     var arCam: SCNNode!
@@ -126,9 +126,11 @@ class ViewController: UIViewController {
     }
     
     func teleport(to portal: Portal){
-//        let offSet = portal.teleportOffSet(player: mainCam)
+        let offSet = portal.offSet(player: mainCam)
         initialCamPos = portal.target.position
-//        initialCamPos.x += offSet
+        initialCamPos.x += offSet.x
+        initialCamPos.y += offSet.y
+        initialCamPos.z += offSet.z
         relativeCamPos = arCam.position
         mainCam.position = initialCamPos
         

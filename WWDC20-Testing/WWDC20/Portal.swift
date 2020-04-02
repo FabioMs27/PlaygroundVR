@@ -76,32 +76,28 @@ class Portal: SCNNode{
     }
     
     ///The space the player has to appear on the other side relative to the portal
-    //TO-DO: change to SCNVector3 instead of float so we can always use this to get distance
-    func teleportOffSet(player: SCNNode) -> Float{
-        player.position.x + self.position.x
+    
+    func offSet(player: SCNNode) -> SCNVector3{
+        let p = player.position
+        let c = self.position
+        return SCNVector3(p.x - c.x, p.y - c.y, p.z - c.z)
     }
     
-//    ///deactivate portal for the sake of rendering power
-//    func deactivatePorta(){
-//        texture.removeAllChildren()
-//        cameraView.scnScene = nil
-//        cameraView.pointOfView = nil
-//    }
-//    
     ///Update what is being seen in the camera
     func updateCameraView(relativeTo player: SCNNode){
         let playerPoint = CGPoint(x: CGFloat(player.position.x), y: CGFloat(player.position.z))
         let portalPoint = CGPoint(x: CGFloat(self.position.x), y: CGFloat(self.position.z))
         let angle = Float.angleToPoint(startingPoint: playerPoint, endingPoint: portalPoint)
         targetCamera.eulerAngles.y = Float(angle/2)
-        let distance = player.position.z - self.position.z
-        let cameraPoint = distance
+        let distance = offSet(player: player)
+        let cameraPoint = distance.z
         var camPos = targetCamera.presentation.position
         camPos.z = Float(cameraPoint)
         targetCamera.position = camPos
 
 //        cameraView.setScale(CGFloat(distance))
-        textCam.setScale(CGFloat(distance))
+        let distanceScale = distance.z > 0 ? distance.z : distance.z * -1
+        textCam.setScale(CGFloat(distanceScale))
     }
     
 }
