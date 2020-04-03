@@ -30,13 +30,13 @@ class Portal: SCNNode{
         return target.childNode(withName: "camera", recursively: true)
     }
     
-    var cameraDir: Float{
-        return portal.eulerAngles.y == 180 ? -1 : 1
-    }
-    
     //Resolution of the portal
     var portalSize: CGSize{
         return UIScreen.main.bounds.size
+    }
+    
+    var cameraDir: Float{
+        return eulerPlus == 0 ? 1 : -1
     }
     ///Depends on its orientation in the screen
     var eulerPlus:Float = 0.0
@@ -101,16 +101,19 @@ class Portal: SCNNode{
         let xzPlayerPoint = CGPoint(x: CGFloat(player.position.x), y: CGFloat(player.position.z))
         let xzPortalPoint = CGPoint(x: CGFloat(self.position.x), y: CGFloat(self.position.z))
         let hAngle = Float.angleToPoint(startingPoint: xzPlayerPoint, endingPoint: xzPortalPoint)
-        ///getting vertical angle
-//        let zyPlayerPoint = CGPoint(x: CGFloat(player.position.z), y: CGFloat(player.position.y))
-//        let zyPortalPoint = CGPoint(x: CGFloat(self.position.z), y: CGFloat(self.position.y))
-//        let vAngle = Float.angleToPoint(startingPoint: zyPlayerPoint, endingPoint: zyPortalPoint)
         
-        targetCamera.eulerAngles.y = hAngle + eulerPlus
-//        targetCamera.eulerAngles.x = vAngle/8
+        targetCamera.eulerAngles.y = treatAngle(angle: hAngle)
+        let distance = offsetPos.z < 0 ? offsetPos.z * -1 : offsetPos.z
         
         //scaling
-        cameraView.setScale(CGFloat(offsetPos.z))
+        cameraView.setScale(CGFloat(distance))
+    }
+    
+    func treatAngle(angle: Float)-> Float{
+        if cameraDir == -1{
+            return (angle/2) + eulerPlus
+        }
+        return ((angle - .pi)/2) + .pi
     }
     
 }
@@ -130,6 +133,6 @@ extension Float {
             radians += CGFloat(2 * Double.pi)
         }
         
-        return (Float(radians) + 45.5) * -0.5
+        return (Float(radians) + 45.5) * -1
     }
 }
