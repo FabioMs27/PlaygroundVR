@@ -81,6 +81,7 @@ class ViewController: UIViewController {
         var duplPortalIn = [SCNNode]()
         var duplPortalOut = [SCNNode]()
 
+        //take every portal from both scenes
         for i in 0..<roomCount{
             ///normal scene
             guard let nodeIn = scene.rootNode.childNode(withName: "PortalIn-\(i)", recursively: true) else{return}
@@ -95,8 +96,12 @@ class ViewController: UIViewController {
             
             duplPortalIn.append(duplNodeIn)
             duplPortalOut.append(duplNodeOut)
+            
+            duplNodeIn.isHidden = true
+            duplNodeOut.isHidden = true
         }
         
+        //Instanciate all the portals with the portal class and set them up.
         for i in 0..<roomCount{
             let nextI = i == roomCount - 1 ? 0 : i + 1
             let lastI = i == 0 ? roomCount - 1 : i - 1

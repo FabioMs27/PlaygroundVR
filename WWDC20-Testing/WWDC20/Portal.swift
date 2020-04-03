@@ -30,10 +30,16 @@ class Portal: SCNNode{
         return target.childNode(withName: "camera", recursively: true)
     }
     
+    var cameraDir: Float{
+        return portal.eulerAngles.y == 180 ? -1 : 1
+    }
+    
     //Resolution of the portal
     var portalSize: CGSize{
         return UIScreen.main.bounds.size
     }
+    ///Depends on its orientation in the screen
+    var eulerPlus:Float = 0.0
     
     var texture: SKScene!
     var textCam = SKCameraNode()
@@ -59,6 +65,8 @@ class Portal: SCNNode{
         self.geometry = portal.geometry
         self.position = portal.position
         self.eulerAngles = portal.eulerAngles
+        eulerPlus = target.eulerAngles.y
+        
         self.physicsBody = portal.physicsBody
         portal.removeFromParentNode()
     }
@@ -76,7 +84,6 @@ class Portal: SCNNode{
     }
     
     ///The space the player has to appear on the other side relative to the portal
-    
     func offSet(player: SCNNode) -> SCNVector3{
         let p = player.position
         let c = self.position
@@ -85,19 +92,25 @@ class Portal: SCNNode{
     
     ///Update what is being seen in the camera
     func updateCameraView(relativeTo player: SCNNode){
-        let playerPoint = CGPoint(x: CGFloat(player.position.x), y: CGFloat(player.position.z))
-        let portalPoint = CGPoint(x: CGFloat(self.position.x), y: CGFloat(self.position.z))
-        let angle = Float.angleToPoint(startingPoint: playerPoint, endingPoint: portalPoint)
-        targetCamera.eulerAngles.y = Float(angle/2)
-        let distance = offSet(player: player)
-        let cameraPoint = distance.z
-        var camPos = targetCamera.presentation.position
-        camPos.z = Float(cameraPoint)
-        targetCamera.position = camPos
-
-//        cameraView.setScale(CGFloat(distance))
-        let distanceScale = distance.z > 0 ? distance.z : distance.z * -1
-        textCam.setScale(CGFloat(distanceScale))
+        //camera position
+        let offsetPos = offSet(player: player)
+        targetCamera.position.z = offsetPos.z * cameraDir
+        
+        //camera orientation
+        ///getting horizontal angle
+        let xzPlayerPoint = CGPoint(x: CGFloat(player.position.x), y: CGFloat(player.position.z))
+        let xzPortalPoint = CGPoint(x: CGFloat(self.position.x), y: CGFloat(self.position.z))
+        let hAngle = Float.angleToPoint(startingPoint: xzPlayerPoint, endingPoint: xzPortalPoint)
+        ///getting vertical angle
+//        let zyPlayerPoint = CGPoint(x: CGFloat(player.position.z), y: CGFloat(player.position.y))
+//        let zyPortalPoint = CGPoint(x: CGFloat(self.position.z), y: CGFloat(self.position.y))
+//        let vAngle = Float.angleToPoint(startingPoint: zyPlayerPoint, endingPoint: zyPortalPoint)
+        
+        targetCamera.eulerAngles.y = hAngle + eulerPlus
+//        targetCamera.eulerAngles.x = vAngle/8
+        
+        //scaling
+        cameraView.setScale(CGFloat(offsetPos.z))
     }
     
 }
@@ -117,6 +130,6 @@ extension Float {
             radians += CGFloat(2 * Double.pi)
         }
         
-        return (Float(radians) + 45.5) * -1
+        return (Float(radians) + 45.5) * -0.5
     }
 }
