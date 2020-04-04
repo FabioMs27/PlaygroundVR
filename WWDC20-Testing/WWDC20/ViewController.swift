@@ -33,12 +33,11 @@ class ViewController: UIViewController {
     var lastIndex: Int{
         return currRoomIndex - 1 < 0 ? roomCount - 1 : currRoomIndex - 1
     }
-    var isTeleporting = false
     
     ///Portals
     var portalsIn = [Portal]()
     var portalsOut = [Portal]()
-    let roomCount = 2
+    let roomCount = 4
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -134,8 +133,9 @@ class ViewController: UIViewController {
         let offSet = portal.offSet(player: mainCam)
         initialCamPos = portal.target.position
         initialCamPos.x += offSet.x
+//        initialCamPos.y += offSet.y + (offSet.y > 0 ? -10 : 10)
         initialCamPos.y += offSet.y
-        initialCamPos.z += offSet.z
+        initialCamPos.z += offSet.z + (offSet.z > 0 ? -0.2 : 0.2)
         relativeCamPos = arCam.position
         mainCam.position = initialCamPos
         
@@ -146,7 +146,6 @@ class ViewController: UIViewController {
         if portal.type == .Out{
             currRoomIndex = nextIndex
         }
-        isTeleporting = true
     }
     
 }
@@ -189,7 +188,6 @@ extension ViewController: ARSCNViewDelegate{
 extension ViewController: SCNPhysicsContactDelegate{
     
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
-        if !isTeleporting{
             ///Check if one of the objects coliding is a portal and than telleport the player to it
             if let portal = (contact.nodeA as? Portal) {
                 teleport(to: portal)
@@ -197,12 +195,9 @@ extension ViewController: SCNPhysicsContactDelegate{
             if let portal = (contact.nodeB as? Portal) {
                 teleport(to: portal)
             }
-        }
     }
     
-    func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
-        isTeleporting = false
-    }
+    
     
 }
 

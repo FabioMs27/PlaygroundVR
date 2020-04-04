@@ -65,6 +65,7 @@ class Portal: SCNNode{
         self.geometry = portal.geometry
         self.position = portal.position
         self.eulerAngles = portal.eulerAngles
+        self.name = portal.name
         eulerPlus = target.eulerAngles.y
         
         self.physicsBody = portal.physicsBody
@@ -77,8 +78,8 @@ class Portal: SCNNode{
         
         cameraView.scnScene = scene
         cameraView.pointOfView = targetCamera
-//        cameraView.viewportSize = CGSize(width: portalSize.width/3, height: portalSize.height/3)
-        cameraView.viewportSize = texture.size
+        cameraView.viewportSize = CGSize(width: portalSize.width/5, height: portalSize.height/5)
+//        cameraView.viewportSize = texture.size
         
         self.geometry?.firstMaterial?.diffuse.contents = texture
     }
