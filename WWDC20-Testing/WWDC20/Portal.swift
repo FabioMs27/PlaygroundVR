@@ -78,9 +78,10 @@ class Portal: SCNNode{
         
         cameraView.scnScene = scene
         cameraView.pointOfView = targetCamera
-        cameraView.viewportSize = CGSize(width: portalSize.width/5, height: portalSize.height/5)
-//        cameraView.viewportSize = texture.size
-        
+//        cameraView.viewportSize = CGSize(width: portalSize.width/3.8, height: portalSize.height/3.8)
+        cameraView.viewportSize = texture.size
+        cameraView.yScale = 2.8
+        cameraView.xScale = 2.8
         self.geometry?.firstMaterial?.diffuse.contents = texture
     }
     
@@ -95,21 +96,39 @@ class Portal: SCNNode{
     func updateCameraView(relativeTo player: SCNNode){
         //camera position
         let offsetPos = offSet(player: player)
-        targetCamera.position.z = offsetPos.z * cameraDir
+        targetCamera.position.z = offsetPos.z * cameraDir - 2.8
+        targetCamera.position.x = offsetPos.x * cameraDir
+        targetCamera.position.y = offsetPos.y
+
         
         //camera orientation
         ///getting horizontal angle
         let xzPlayerPoint = CGPoint(x: CGFloat(player.position.x), y: CGFloat(player.position.z))
         let xzPortalPoint = CGPoint(x: CGFloat(self.position.x), y: CGFloat(self.position.z))
-        let hAngle = Float.angleToPoint(startingPoint: xzPlayerPoint, endingPoint: xzPortalPoint)
+        let hAngle = Float.angleToPoint(startingPoint: xzPlayerPoint, endingPoint: xzPortalPoint, radius: 45.5209)
+        
+        let yzPlayerPoint = CGPoint(x: CGFloat(player.position.y), y: CGFloat(player.position.z))
+        let yzPortalPoint = CGPoint(x: CGFloat(self.position.y), y: CGFloat(self.position.z))
+        let vAngle = Float.angleToPoint(startingPoint: yzPlayerPoint, endingPoint: yzPortalPoint, radius: 45.57)
         
         targetCamera.eulerAngles.y = treatAngle(angle: hAngle)
-        let distance = offsetPos.z < 0 ? offsetPos.z * -1 : offsetPos.z
+        targetCamera.eulerAngles.x = (vAngle * -1)/4
+
+        let distance = (offsetPos.z < 0 ? offsetPos.z * -1 : offsetPos.z)
         
+//        targetCamera.camera?.fieldOfView = CGFloat(distance * 60)
+//        targetCamera.position.z -= distance/3.8
+
         //scaling
-        cameraView.setScale(CGFloat(distance))
+        
+        
+        scaling(by: distance)
+//        textCam.setScale(CGFloat(distance/3.8))
+//        texture.setScale(CGFloat(distance))
+//        targetCamera.camera?.fieldOfView = CGFloat(distance) + 60
     }
     
+    ///Updating the Horizontal angles
     func treatAngle(angle: Float)-> Float{
         if cameraDir == -1{
             return (angle/2) + eulerPlus
@@ -117,12 +136,20 @@ class Portal: SCNNode{
         return ((angle - .pi)/2) + .pi
     }
     
+    ///Update Scaling
+    func scaling(by distance: Float){
+//        if distance < 3.8 {
+//            textCam.setScale(CGFloat((3.8 - distance) + 1))
+//        }else{
+            cameraView.setScale(CGFloat(distance + 1))
+//        }
+    }
 }
 
 //MARK: - Getting Angles
 //Getting angle between 2 points
 extension Float {
-    static func angleToPoint(startingPoint: CGPoint, endingPoint: CGPoint) -> Float {
+    static func angleToPoint(startingPoint: CGPoint, endingPoint: CGPoint, radius: Float) -> Float {
         
         let originPoint = CGPoint(x: endingPoint.x - startingPoint.x, y: endingPoint.y - startingPoint.y)
         
@@ -134,6 +161,6 @@ extension Float {
             radians += CGFloat(2 * Double.pi)
         }
         
-        return (Float(radians) + 45.5) * -1
+        return (Float(radians) + radius) * -1
     }
 }
