@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/fabioms/Desktop/WWDC2020/WWDC20-Testing/WWDC20.xcodeproj/Dolphin.mp4">
+   </FileRef>
+   <FileRef
       location = "self:WWDC20.xcodeproj">
    </FileRef>
 </Workspace>

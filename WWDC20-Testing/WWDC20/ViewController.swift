@@ -63,6 +63,13 @@ class ViewController: UIViewController {
         // Set up Cameras
         mainCam = scene.rootNode.childNode(withName: "mainCam", recursively: true)
         
+        // Set up Spheres
+        let sphere = scene.rootNode.childNode(withName: "Room-2", recursively: true)!
+        let sphereDupl = scene.rootNode.childNode(withName: "Room-2", recursively: true)!
+        setUpVideo(in: sphere)
+        setUpVideo(in: sphereDupl)
+
+        
         ///Setting up the main cam to be the point of view, thus making the game VR using the arCam informations like  orientation and movement
         arCam = sceneView.pointOfView
         sceneView.pointOfView = mainCam
@@ -71,6 +78,28 @@ class ViewController: UIViewController {
         relativeCamPos = arCam.position
         setUpPortals()
         currRoomIndex = 0
+    }
+    
+    //MARK: - Setting up videos
+    func setUpVideo(in sphere: SCNNode){
+        
+        ///setting video and playing it
+        let videoURL = Bundle.main.url(forResource: "Dolphin", withExtension: "mp4")
+        let videoPlayer = AVPlayer(url: videoURL!)
+        
+        let skScene = SKScene(size: CGSize(width: sceneView.frame.width, height: sceneView.frame.height))
+        skScene.scaleMode = .aspectFit
+        
+        let videoNode = SKVideoNode(avPlayer: videoPlayer)
+        videoNode.position = CGPoint(x: skScene.size.width/2, y: skScene.size.height/2)
+        videoNode.yScale = -1
+        videoNode.size = skScene.size
+        skScene.addChild(videoNode)
+        videoNode.play()
+        
+        ///setting as material
+        sphere.geometry?.firstMaterial?.diffuse.contents = skScene
+
     }
     
     //MARK: - Setting up Portals
@@ -133,7 +162,6 @@ class ViewController: UIViewController {
         let offSet = portal.offSet(player: mainCam)
         initialCamPos = portal.target.position
         initialCamPos.x += offSet.x
-//        initialCamPos.y += offSet.y + (offSet.y > 0 ? -10 : 10)
         initialCamPos.y += offSet.y
         initialCamPos.z += offSet.z + (offSet.z > 0 ? -0.2 : 0.2)
         relativeCamPos = arCam.position

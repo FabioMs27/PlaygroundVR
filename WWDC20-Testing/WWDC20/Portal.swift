@@ -104,7 +104,7 @@ class Portal: SCNNode{
         ///getting horizontal angle
         let xzPlayerPoint = CGPoint(x: CGFloat(player.position.x), y: CGFloat(player.position.z))
         let xzPortalPoint = CGPoint(x: CGFloat(self.position.x), y: CGFloat(self.position.z))
-        let hAngle = Float.angleToPoint(startingPoint: xzPlayerPoint, endingPoint: xzPortalPoint, radius: 45.5209)
+        let hAngle = Float.angleToPoint(startingPoint: xzPlayerPoint, endingPoint: xzPortalPoint, radius: 45.55)
         
         let yzPlayerPoint = CGPoint(x: CGFloat(player.position.y), y: CGFloat(player.position.z))
         let yzPortalPoint = CGPoint(x: CGFloat(self.position.y), y: CGFloat(self.position.z))
@@ -121,7 +121,7 @@ class Portal: SCNNode{
         //scaling
         
         
-        scaling(by: distance - 0.3)
+        scaling(by: distance - 0.1)
 //        textCam.setScale(CGFloat(distance/3.8))
 //        texture.setScale(CGFloat(distance))
 //        targetCamera.camera?.fieldOfView = CGFloat(distance) + 60
