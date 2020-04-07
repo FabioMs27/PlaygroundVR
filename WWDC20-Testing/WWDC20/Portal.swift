@@ -48,6 +48,7 @@ class Portal: SCNNode{
     init(with portal: SCNNode, and target: SCNNode, type: PortalType) {
         super.init()
         texture = SKScene(size: portalSize)
+        texture.scaleMode = .aspectFit
         texture.camera = textCam
         
         self.portal = portal
@@ -78,10 +79,8 @@ class Portal: SCNNode{
         
         cameraView.scnScene = scene
         cameraView.pointOfView = targetCamera
-//        cameraView.viewportSize = CGSize(width: portalSize.width/3.8, height: portalSize.height/3.8)
-        cameraView.viewportSize = texture.size
-        cameraView.yScale = 2.8
-        cameraView.xScale = 2.8
+        cameraView.viewportSize = CGSize(width: portalSize.width, height: portalSize.height)
+//        cameraView.viewportSize = texture.size
         self.geometry?.firstMaterial?.diffuse.contents = texture
     }
     
@@ -96,7 +95,7 @@ class Portal: SCNNode{
     func updateCameraView(relativeTo player: SCNNode){
         //camera position
         let offsetPos = offSet(player: player)
-        targetCamera.position.z = offsetPos.z * cameraDir - 2.8
+        targetCamera.position.z = offsetPos.z * cameraDir
         targetCamera.position.x = offsetPos.x * cameraDir
         targetCamera.position.y = offsetPos.y
 
@@ -112,7 +111,7 @@ class Portal: SCNNode{
         let vAngle = Float.angleToPoint(startingPoint: yzPlayerPoint, endingPoint: yzPortalPoint, radius: 45.57)
         
         targetCamera.eulerAngles.y = treatAngle(angle: hAngle)
-        targetCamera.eulerAngles.x = (vAngle * -1)/4
+        targetCamera.eulerAngles.x = (vAngle * -1)
 
         let distance = (offsetPos.z < 0 ? offsetPos.z * -1 : offsetPos.z)
         
@@ -122,7 +121,7 @@ class Portal: SCNNode{
         //scaling
         
         
-        scaling(by: distance)
+        scaling(by: distance - 0.3)
 //        textCam.setScale(CGFloat(distance/3.8))
 //        texture.setScale(CGFloat(distance))
 //        targetCamera.camera?.fieldOfView = CGFloat(distance) + 60
@@ -131,9 +130,9 @@ class Portal: SCNNode{
     ///Updating the Horizontal angles
     func treatAngle(angle: Float)-> Float{
         if cameraDir == -1{
-            return (angle/2) + eulerPlus
+            return (angle) + eulerPlus
         }
-        return ((angle - .pi)/2) + .pi
+        return ((angle - .pi)) + .pi
     }
     
     ///Update Scaling
@@ -141,8 +140,11 @@ class Portal: SCNNode{
 //        if distance < 3.8 {
 //            textCam.setScale(CGFloat((3.8 - distance) + 1))
 //        }else{
-            cameraView.setScale(CGFloat(distance + 1))
+//            cameraView.setScale(CGFloat(distance/0.1))
 //        }
+//        cameraView.projectPoint(SIMD3<Float>(repeating: distance))
+        cameraView.setScale(CGFloat(distance))
+        
     }
 }
 
