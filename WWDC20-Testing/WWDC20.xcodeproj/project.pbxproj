@@ -53,6 +53,18 @@
 		7933E557242D42B200AE9B5A /* WWDC20UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WWDC20UITests.swift; sourceTree = "<group>"; };
 		7933E559242D42B200AE9B5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7962743B24326E0F0015EFD1 /* Portal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Portal.swift; sourceTree = "<group>"; };
+		79920B83243D847C0017E191 /* chess.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chess.png; sourceTree = "<group>"; };
+		79920B84243D847C0017E191 /* broken.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = broken.png; sourceTree = "<group>"; };
+		79920B85243D847C0017E191 /* box.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = box.png; sourceTree = "<group>"; };
+		79920B86243D847C0017E191 /* forest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = forest.png; sourceTree = "<group>"; };
+		79920B87243D847C0017E191 /* beach.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beach.png; sourceTree = "<group>"; };
+		79920B88243D847C0017E191 /* floor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = floor.png; sourceTree = "<group>"; };
+		79920B89243D84830017E191 /* museum.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = museum.png; sourceTree = "<group>"; };
+		79920B8A243D84830017E191 /* wall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wall.png; sourceTree = "<group>"; };
+		79920B8B243D84830017E191 /* wallWood2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wallWood2.png; sourceTree = "<group>"; };
+		79920B8C243D84830017E191 /* wall2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wall2.png; sourceTree = "<group>"; };
+		79920B8D243D84830017E191 /* wallWood.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wallWood.png; sourceTree = "<group>"; };
+		79920B8E243D84830017E191 /* mansion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mansion.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +115,18 @@
 		7933E534242D42AD00AE9B5A /* WWDC20 */ = {
 			isa = PBXGroup;
 			children = (
+				79920B8E243D84830017E191 /* mansion.png */,
+				79920B89243D84830017E191 /* museum.png */,
+				79920B8A243D84830017E191 /* wall.png */,
+				79920B8C243D84830017E191 /* wall2.png */,
+				79920B8D243D84830017E191 /* wallWood.png */,
+				79920B8B243D84830017E191 /* wallWood2.png */,
+				79920B87243D847C0017E191 /* beach.png */,
+				79920B85243D847C0017E191 /* box.png */,
+				79920B84243D847C0017E191 /* broken.png */,
+				79920B83243D847C0017E191 /* chess.png */,
+				79920B88243D847C0017E191 /* floor.png */,
+				79920B86243D847C0017E191 /* forest.png */,
 				7913552D243CC18900D998F0 /* Dolphin.mp4 */,
 				7933E535242D42AD00AE9B5A /* AppDelegate.swift */,
 				7933E537242D42AD00AE9B5A /* art.scnassets */,

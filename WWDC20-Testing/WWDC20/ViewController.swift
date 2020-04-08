@@ -37,7 +37,7 @@ class ViewController: UIViewController {
     ///Portals
     var portalsIn = [Portal]()
     var portalsOut = [Portal]()
-    let roomCount = 4
+    let roomCount = 5
     
     override func viewDidLoad() {
         super.viewDidLoad()
