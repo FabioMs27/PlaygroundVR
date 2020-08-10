@@ -14,7 +14,7 @@ First things first. It seems Valve is doing some crazy researches about connecti
 
 Now I introduce you to the concept of Non-Euclidian geometry. It’s quite complex. It envolves some parallel lines that actually meet each other at some point. Crazy stuff right? But don’t you worry, that’s the math concept, and its actually pretty interesting. You should definitely check it out. But here, what we need is the video game concept of it, which is really just a space that can’t be reproduced in reality but can in virtual reality. Can you go down stairs but actually up? No, but in a game you can. Now, just how will that help us. It’s quite simple. We just have to create a space, let’s say, the size of your room where we can fit an infinite amount of space in it. Back to the house exemple, you would be in your room, but going around in circles would take you to different rooms in your house, all within the limited space you are walking in the real world. Still hard to picture it, right? Take a look at this.
 
-![](https://media.giphy.com/media/lna65Q4FeTIvKmLJsr/giphy.gif) ![](https://media.giphy.com/media/XeGyZqpyVXc4QCrCnB/giphy.gif)
+            ![](https://media.giphy.com/media/lna65Q4FeTIvKmLJsr/giphy.gif)             ![](https://media.giphy.com/media/XeGyZqpyVXc4QCrCnB/giphy.gif)
 
 By using this concept we can create an entire VR game, which is more accessible, requiring only a very small space, when in the virtual world the player is traveling through many places.
 
